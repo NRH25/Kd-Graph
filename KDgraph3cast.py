@@ -3,12 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
+# put your excel/CSV file paths here
 file_paths = [
-    '/Users/nicholasrodchenko/Desktop/Soka/Kdcalc/2022_04_11/SagamiBay_CAST_001_2022_04_11_095037_URC_cast1.csv',
-    '/Users/nicholasrodchenko/Desktop/Soka/Kdcalc/2022_04_11/SagamiBay_CAST_002_2022_04_11_095823_URC_cast2.csv',
-    '/Users/nicholasrodchenko/Desktop/Soka/Kdcalc/2022_04_11/SagamiBay_CAST_003_2022_04_11_100634_URC_cast3.csv'
+    '~',
+    '~',
+    '~'
 ]
 
+#put surface irradiance values (0+)
 Es_0_values = {
     0: {'443': 103.9043, '490': 112.6771, '665': 93.37347},  
     1: {'443': 114.1896, '490': 124.6543, '665': 105.316},  
@@ -32,6 +34,7 @@ for i, file_path in enumerate(file_paths):
     print(data.head())
     print(data.dtypes)
     
+# put your value column names exactly how they are written on the excel/CSV file
     pitch_column_index = data.columns.get_loc('EdZPitch')  
     roll_column_index = data.columns.get_loc('EdZRoll')  
     depth_column_index = data.columns.get_loc('LuZDepth (m)')  
@@ -44,7 +47,8 @@ for i, file_path in enumerate(file_paths):
     
     data.iloc[:, pitch_column_index] = pd.to_numeric(data.iloc[:, pitch_column_index], errors='coerce')
     data.iloc[:, roll_column_index] = pd.to_numeric(data.iloc[:, roll_column_index], errors='coerce')
-    
+
+    #pitch/roll correcting. In marine oceanography any measurement past plus/minus 5 degrees for pitch/roll is considered inaccurate
     reliable_data = data[(data.iloc[:, pitch_column_index].abs() <= 5) & (data.iloc[:, roll_column_index].abs() <= 5)]
 
     depth = reliable_data.iloc[:, depth_column_index]
@@ -60,6 +64,7 @@ for i, file_path in enumerate(file_paths):
     Es_490_0 = Es_0_values[i]['490']
     Es_665_0 = Es_0_values[i]['665']
 
+#surface irradiance correction equation (UNFINISHED)
     EdZ_443_corrected = EdZ_443 * (Es_443_0 / Es_443_z)
     EdZ_490_corrected = EdZ_490 * (Es_490_0 / Es_490_z)
     EdZ_665_corrected = EdZ_665 * (Es_665_0 / Es_665_z)
